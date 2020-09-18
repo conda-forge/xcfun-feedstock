@@ -1,6 +1,6 @@
 {% set name = "xcfun" %}
-{% set version = "2.0.2" %}
-{% set sha256 = "b79a71861a9e1d0e33c1be89b34f6f052d430cd495a7df982c407ad0140c1dcd" %}
+{% set version = "2.1.0" %}
+{% set sha256 = "64aac8c933cc129ce6326f3827e342abfd10b94ea4a302aaca9f10d342ad7656" %}
 {% set pyver = PY_VER.replace(".", "") %}
 
 package:
@@ -13,14 +13,14 @@ source:
 
 build:
   number: 0
-  skip: true  # [win]
+  skip: true  # [win and vc<14]
   binary_relocation: true
   run_exports:
-    - {{ pin_subpackage('xcfun', max_pin='x') }}
+    - {{ pin_subpackage('xcfun', max_pin='x.x') }}
 
 requirements:
   build:
-    - cmake >=3.11
+    - cmake >=3.14
     - {{ compiler('cxx') }}
     - pybind11 =*=*py{{ pyver }}*
     - ninja
@@ -39,12 +39,16 @@ test:
     # Verify library
     - test -L $PREFIX/lib/libxcfun$SHLIB_EXT                              # [not win]
     - test -f $SP_DIR/xcfun/_xcfun*.so                                    # [not win]
+    # Verify library
+    - if not exist %PREFIX%\\Library\\lib\\xcfun.lib exit 1               # [win]
+    - if not exist %SP_DIR%\\xcfun\\_xcfun*.pyd exit 1                    # [win]
     # Inspect linkage
     - ldd -v $PREFIX/lib/libxcfun$SHLIB_EXT                               # [linux]
     - otool -L $PREFIX/lib/libxcfun$SHLIB_EXT                             # [osx]
     - conda inspect linkages --show-files --groupby=dependency $PKG_NAME  # [not win]
     - conda inspect objects -p $PREFIX $PKG_NAME                          # [osx]
     - ls -l $SP_DIR/xcfun                                                 # [not win]
+    - dir %SP_DIR%\\xcfun                                                 # [win]
     - ldd -v $SP_DIR/xcfun/_xcfun*.so                                     # [linux]
     - otool -L $SP_DIR/xcfun/_xcfun*.so                                   # [osx]
     # Actually test
@@ -53,10 +57,13 @@ test:
 outputs:
   - name: xcfun
     files:
-      - include/XCFun       # [not win]
-      - lib/libxcfun*       # [not win]
-      - share/cmake/XCFun   # [not win]
-      - {{ SP_DIR }}/xcfun  # [not win]
+      - include/XCFun              # [not win]
+      - lib/libxcfun*              # [not win]
+      - share/cmake/XCFun          # [not win]
+      - {{ SP_DIR }}/xcfun
+      - Library/include/XCFun      # [win]
+      - Library/lib/xcfun*         # [win]
+      - Library/share/cmake/XCFun  # [win]
 
 about:
   home: https://github.com/dftlibs/xcfun

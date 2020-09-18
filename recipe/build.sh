@@ -1,7 +1,3 @@
-# Mechanism to tweak compiler flags
-# Pass with -DCMAKE_<LANG>_FLAGS=${ALLOPTS}
-ALLOPTS="${CFLAGS}"
-
 # configure
 cmake \
      -H${SRC_DIR} \
