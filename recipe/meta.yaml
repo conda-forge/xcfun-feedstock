@@ -10,6 +10,13 @@ package:
 source:
   url: https://github.com/dftlibs/xcfun/archive/v{{ version }}.tar.gz
   sha256: {{ sha256 }}
+  patches:
+    # fix handling of include dirs within the build tree
+    - patches/cmake_install_includedir.patch
+    # allow to customize where the CMake config file will be installed
+    - patches/install_cmakedir.patch
+    # better handling of the folder structure for the Python module
+    - patches/pymod_install_libdir.patch
 
 build:
   number: 0
@@ -28,6 +35,7 @@ requirements:
     - python
   run:
     - numpy
+    - python  # [win]
 
 test:
   requires:
@@ -37,20 +45,20 @@ test:
     - xcfun
   commands:
     # Verify library
-    - test -L $PREFIX/lib/libxcfun$SHLIB_EXT                              # [not win]
-    - test -f $SP_DIR/xcfun/_xcfun*.so                                    # [not win]
-    # Verify library
-    - if not exist %PREFIX%\\Library\\lib\\xcfun.lib exit 1               # [win]
-    - if not exist %SP_DIR%\\xcfun\\_xcfun*.pyd exit 1                    # [win]
+    - test -L $PREFIX/lib/libxcfun$SHLIB_EXT                                # [not win]
+    - test -f $SP_DIR/xcfun/_xcfun*.so                                      # [not win]
+    - if not exist %PREFIX%\\Library\\bin\\xcfun.dll exit 1                 # [win]
+    - if not exist %PREFIX%\\Library\\lib\\xcfun.lib exit 1                 # [win]
+    - if not exist %PREFIX%\\Lib\\site-packages\\xcfun\\_xcfun*.pyd exit 1  # [win]
     # Inspect linkage
-    - ldd -v $PREFIX/lib/libxcfun$SHLIB_EXT                               # [linux]
-    - otool -L $PREFIX/lib/libxcfun$SHLIB_EXT                             # [osx]
-    - conda inspect linkages --show-files --groupby=dependency $PKG_NAME  # [not win]
-    - conda inspect objects -p $PREFIX $PKG_NAME                          # [osx]
-    - ls -l $SP_DIR/xcfun                                                 # [not win]
-    - dir %SP_DIR%\\xcfun                                                 # [win]
-    - ldd -v $SP_DIR/xcfun/_xcfun*.so                                     # [linux]
-    - otool -L $SP_DIR/xcfun/_xcfun*.so                                   # [osx]
+    - ldd -v $PREFIX/lib/libxcfun$SHLIB_EXT                                 # [linux]
+    - otool -L $PREFIX/lib/libxcfun$SHLIB_EXT                               # [osx]
+    - conda inspect linkages --show-files --groupby=dependency $PKG_NAME    # [not win]
+    - conda inspect objects -p $PREFIX $PKG_NAME                            # [osx]
+    - ls -l $SP_DIR/xcfun                                                   # [not win]
+    - dir %PREFIX%\\Lib\\site-packages\\xcfun                               # [win]
+    - ldd -v $SP_DIR/xcfun/_xcfun*.so                                       # [linux]
+    - otool -L $SP_DIR/xcfun/_xcfun*.so                                     # [osx]
     # Actually test
     - python -m pytest --pyargs xcfun
 
@@ -60,10 +68,12 @@ outputs:
       - include/XCFun              # [not win]
       - lib/libxcfun*              # [not win]
       - share/cmake/XCFun          # [not win]
-      - {{ SP_DIR }}/xcfun
-      - Library/include/XCFun      # [win]
-      - Library/lib/xcfun*         # [win]
-      - Library/share/cmake/XCFun  # [win]
+      - {{ SP_DIR }}/xcfun         # [not win]
+      - Library\include\XCFun      # [win]
+      - Library\bin\xcfun*         # [win]
+      - Library\lib\xcfun*         # [win]
+      - Library\share\cmake\XCFun  # [win]
+      - Lib\site-packages\xcfun    # [win]
 
 about:
   home: https://github.com/dftlibs/xcfun
