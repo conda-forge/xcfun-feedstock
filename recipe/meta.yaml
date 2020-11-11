@@ -2,6 +2,7 @@
 {% set version = "2.1.0" %}
 {% set sha256 = "64aac8c933cc129ce6326f3827e342abfd10b94ea4a302aaca9f10d342ad7656" %}
 {% set pyver = PY_VER.replace(".", "") %}
+{% set build = 0 %}
 
 package:
   name: {{ name|lower }}
@@ -19,7 +20,7 @@ source:
     - patches/pymod_install_libdir.patch
 
 build:
-  number: 0
+  number: {{ build }}
   skip: true  # [win and vc<14]
   binary_relocation: true
   run_exports:
