@@ -3,13 +3,15 @@ About xcfun
 
 Home: https://github.com/dftlibs/xcfun
 
-Package license: MPL-2.0
+Package license: [MPL-2.0](https://opensource.org/licenses/MPL-2.0)
 
-Feedstock license: BSD-3-Clause
+Feedstock license: [BSD-3-Clause](https://github.com/conda-forge/xcfun-feedstock/blob/master/LICENSE.txt)
 
 Summary: Exchange-Correlation functionals with arbitrary order derivatives.
 
+Development: https://github.com/dftlibs/xcfun
 
+Documentation: https://xcfun.readthedocs.io
 
 Current build status
 ====================
