@@ -2,7 +2,7 @@
 {% set version = "2.1.1" %}
 {% set sha256 = "8b602df74c7be83d501532565deafd1b7881946d94789122f24c309a669298ab" %}
 {% set pyver = PY_VER.replace(".", "") %}
-{% set build = 0 %}
+{% set build = 1 %}
 
 package:
   name: {{ name|lower }}
@@ -47,8 +47,6 @@ test:
     # Inspect linkage
     - ldd -v $PREFIX/lib/libxcfun$SHLIB_EXT                                 # [linux]
     - otool -L $PREFIX/lib/libxcfun$SHLIB_EXT                               # [osx]
-    - conda inspect linkages --show-files --groupby=dependency $PKG_NAME    # [not win]
-    - conda inspect objects -p $PREFIX $PKG_NAME                            # [osx]
     - ls -l $SP_DIR/xcfun                                                   # [not win]
     - dir %PREFIX%\\Lib\\site-packages\\xcfun                               # [win]
     - ldd -v $SP_DIR/xcfun/_xcfun*.so                                       # [linux]
