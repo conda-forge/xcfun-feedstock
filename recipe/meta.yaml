@@ -37,6 +37,7 @@ test:
   requires:
     - numpy
     - pytest
+    - pip
   imports:
     - xcfun
   commands:
