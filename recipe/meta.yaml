@@ -1,8 +1,7 @@
 {% set name = "xcfun" %}
 {% set version = "2.1.1" %}
 {% set sha256 = "8b602df74c7be83d501532565deafd1b7881946d94789122f24c309a669298ab" %}
-{% set pyver = PY_VER.replace(".", "") %}
-{% set build = 4 %}
+{% set build = 5 %}
 
 package:
   name: {{ name|lower }}
@@ -15,20 +14,21 @@ source:
 build:
   number: {{ build }}
   skip: true  # [win and vc<14]
-  binary_relocation: true
   run_exports:
     - {{ pin_subpackage('xcfun', max_pin='x.x') }}
 
 requirements:
   build:
-    - python                                 # [build_platform != target_platform]
-    - cross-python_{{ target_platform }}     # [build_platform != target_platform]
+    - python  # [build_platform != target_platform]
+    - cross-python_{{ target_platform }}  # [build_platform != target_platform]
+    - pybind11  # [build_platform != target_platform]  
     - cmake >=3.14
     - {{ compiler('cxx') }}
-    - pybind11 =*=*py{{ pyver }}*
     - ninja
   host:
     - python
+    - pybind11
+    - pybind11-abi
   run:
     - numpy
     - python  # [win]
@@ -37,22 +37,21 @@ test:
   requires:
     - numpy
     - pytest
+    - pip
   imports:
     - xcfun
   commands:
+    - pip check
     # Verify library
-    - test -L $PREFIX/lib/libxcfun$SHLIB_EXT                                # [not win]
-    - test -f $SP_DIR/xcfun/_xcfun*.so                                      # [not win]
     - if not exist %PREFIX%\\Library\\bin\\xcfun.dll exit 1                 # [win]
     - if not exist %PREFIX%\\Library\\lib\\xcfun.lib exit 1                 # [win]
     - if not exist %PREFIX%\\Lib\\site-packages\\xcfun\\_xcfun*.pyd exit 1  # [win]
     # Inspect linkage
     - ldd -v $PREFIX/lib/libxcfun$SHLIB_EXT                                 # [linux]
     - otool -L $PREFIX/lib/libxcfun$SHLIB_EXT                               # [osx]
-    - ls -l $SP_DIR/xcfun                                                   # [not win]
-    - dir %PREFIX%\\Lib\\site-packages\\xcfun                               # [win]
-    - ldd -v $SP_DIR/xcfun/_xcfun*.so                                       # [linux]
-    - otool -L $SP_DIR/xcfun/_xcfun*.so                                     # [osx]
+    - export PYLIB_EXT=`$PYTHON -c 'from numpy import distutils; print(distutils.misc_util.get_shared_lib_extension(is_python_ext=True))'`  # [unix]
+    - ldd -v $SP_DIR/xcfun/_xcfun$PYLIB_EXT  # [linux]
+    - otool -L $SP_DIR/xcfun/_xcfun$PYLIB_EXT  # [osx]
     # Actually test
     - python -m pytest --pyargs xcfun
 
