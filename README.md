@@ -1,11 +1,11 @@
-About xcfun
-===========
+About xcfun-feedstock
+=====================
+
+Feedstock license: [BSD-3-Clause](https://github.com/conda-forge/xcfun-feedstock/blob/main/LICENSE.txt)
 
 Home: https://github.com/dftlibs/xcfun
 
 Package license: [MPL-2.0](https://opensource.org/licenses/MPL-2.0)
-
-Feedstock license: [BSD-3-Clause](https://github.com/conda-forge/xcfun-feedstock/blob/main/LICENSE.txt)
 
 Summary: Exchange-Correlation functionals with arbitrary order derivatives.
 
@@ -336,7 +336,4 @@ Feedstock Maintainers
 
 * [@bast](https://github.com/bast/)
 * [@robertodr](https://github.com/robertodr/)
-
-
-<!-- dummy commit to enable rerendering -->
 
