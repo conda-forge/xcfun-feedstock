@@ -49,7 +49,7 @@ test:
     # Inspect linkage
     - ldd -v $PREFIX/lib/libxcfun$SHLIB_EXT                                 # [linux]
     - otool -L $PREFIX/lib/libxcfun$SHLIB_EXT                               # [osx]
-    - export PYLIB_EXT=`$PYTHON -c 'import sysconfig; print(sysconfig.get_config_var('EXT_SUFFIX'))'`  # [unix]
+    - export PYLIB_EXT=`$PYTHON -c 'import sysconfig; print(sysconfig.get_config_var("EXT_SUFFIX"))'`  # [unix]
     - ldd -v $SP_DIR/xcfun/_xcfun$PYLIB_EXT  # [linux]
     - otool -L $SP_DIR/xcfun/_xcfun$PYLIB_EXT  # [osx]
     # Actually test
