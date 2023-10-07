@@ -1,7 +1,7 @@
 {% set name = "xcfun" %}
 {% set version = "2.1.1" %}
 {% set sha256 = "8b602df74c7be83d501532565deafd1b7881946d94789122f24c309a669298ab" %}
-{% set build = 6 %}
+{% set build = 7 %}
 
 package:
   name: {{ name|lower }}
@@ -49,7 +49,7 @@ test:
     # Inspect linkage
     - ldd -v $PREFIX/lib/libxcfun$SHLIB_EXT                                 # [linux]
     - otool -L $PREFIX/lib/libxcfun$SHLIB_EXT                               # [osx]
-    - export PYLIB_EXT=`$PYTHON -c 'from numpy import distutils; print(distutils.misc_util.get_shared_lib_extension(is_python_ext=True))'`  # [unix]
+    - export PYLIB_EXT=`$PYTHON -c 'import sysconfig; print(sysconfig.get_config_var("EXT_SUFFIX"))'`  # [unix]
     - ldd -v $SP_DIR/xcfun/_xcfun$PYLIB_EXT  # [linux]
     - otool -L $SP_DIR/xcfun/_xcfun$PYLIB_EXT  # [osx]
     # Actually test
