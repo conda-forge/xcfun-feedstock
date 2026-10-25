@@ -1,4 +1,8 @@
 # configure
+
+# disable fast math, errors on aarch64
+# sed -i '/-ffast-math/d' ${SRC_DIR}/cmake/custom/compilers/CXXFlags.cmake
+
 cmake ${CMAKE_ARGS} \
      -H${SRC_DIR} \
      -Bbuild \
